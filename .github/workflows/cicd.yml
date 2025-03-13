@@ -1,24 +1,45 @@
 name: CI/CD Pipeline for Node.js App
 
-on:
-  push:
-    branches:
-      - main
-
+on: [push]
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '22'
 
-      - name: Install packages
-        run: npm install
+            - name: Install packages
+              run: npm install
 
-      - name: Test the application
-        run: npm run check
+            - name: Test the application
+              run: npm run check
+    
+    deploy:
+        needs: test
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+
+            - name: Install packages
+              run: npm install
+            
+            - name: Run The Applications By PM2
+              run: |
+                ls -a
+                pm2 status
+                #delete node-app process
+                pm2 delete node-app || true
+
+                #Create a Background Process
+                pm2 start "npm start" --name="node-app"
+                  
+
+
+
+ 
