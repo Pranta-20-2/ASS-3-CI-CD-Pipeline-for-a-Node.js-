@@ -38,6 +38,9 @@ jobs:
 
                 #Create a Background Process
                 pm2 start "npm start" --name="node-app"
+
+                #save the process list
+                pm2 save
                   
 
 
